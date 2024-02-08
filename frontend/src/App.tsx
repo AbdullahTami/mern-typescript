@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Note } from "./models/note";
+import { Note as NoteModal } from "./models/note";
+import Note from "./components/Note";
 
 function App() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState<NoteModal[]>([]);
 
   useEffect(function () {
     async function getNotes() {
@@ -19,7 +20,13 @@ function App() {
     }
     getNotes();
   }, []);
-  return null;
+  return (
+    <div>
+      {notes.map((note) => (
+        <Note note={note} key={note._id} />
+      ))}
+    </div>
+  );
 }
 
 export default App;
