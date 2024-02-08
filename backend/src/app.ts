@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import globalAppError from "./utils/globalAppError";
 import noteRouter from "./routes/notesRouter";
+import createHttpError from "http-errors";
 const app = express();
 
 //Middleware
@@ -13,7 +14,7 @@ app.use("/api/notes", noteRouter);
 
 // Unknown endpoint
 app.use((req, res, next) => {
-  next(Error("Endpoint not found ⛔"));
+  next(createHttpError(404, "Endpoint not found ⛔"));
 });
 
 // Global error handler
