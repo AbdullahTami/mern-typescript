@@ -1,14 +1,15 @@
-import app from "./app";
 import "dotenv/config";
+import env from "./utils/validateEnv";
 import mongoose from "mongoose";
+import app from "./app";
 
-const port = process.env.PORT || 5140;
+const port = env.PORT || 5000;
 
 mongoose
-  .connect(process.env.DATABASE!)
+  .connect(env.DATABASE)
   .then(() => {
     app.listen(port, () => {
-      console.log(`Server running on port: ${port} 😀`);
+      console.log(`Server is running on port ${port} 😀!`);
     });
   })
   .catch((e) => {

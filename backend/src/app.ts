@@ -1,29 +1,22 @@
-import "dotenv/config";
-import express, { NextFunction, Request, Response } from "express";
-import noteModel from "./models/noteModel";
-
+import express from "express";
+import morgan from "morgan";
+import globalAppError from "./utils/globalAppError";
+import noteRouter from "./routes/notesRouter";
 const app = express();
 
-app.get("/", async (req, res, next) => {
-  try {
-    throw Error("Error");
-    const notes = await noteModel.find().exec();
-    res.status(200).json(notes);
-  } catch (error) {
-    next(error);
-  }
-});
+//Middleware
+app.use(morgan("dev"));
+app.use(express.json());
 
+// Routes
+app.use("/api/notes", noteRouter);
+
+// Unknown endpoint
 app.use((req, res, next) => {
-  next(Error("Endpoint not found"));
+  next(Error("Endpoint not found ⛔"));
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
-  console.error(error);
-  let errorMessage = "An unknown error occurred";
-  if (error instanceof Error) errorMessage = error.message;
-  res.status(500).json({ error: errorMessage });
-});
+// Global error handler
+app.use(globalAppError);
 
 export default app;
