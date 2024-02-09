@@ -5,21 +5,35 @@ import { useForm } from "react-hook-form";
 import { NoteInput } from "../api/note_api";
 import * as NoteApi from "../api/note_api";
 
-interface AddNoteDialogueProps {
+interface AddEditNoteDialogueProps {
+  noteToEdit?: Note;
   onDismiss: () => void;
   onNoteSaved: (note: Note) => void;
 }
 
-function AddNoteDialogue({ onDismiss, onNoteSaved }: AddNoteDialogueProps) {
+function AddEditNoteDialogue({
+  noteToEdit,
+  onDismiss,
+  onNoteSaved,
+}: AddEditNoteDialogueProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<NoteInput>();
+  } = useForm<NoteInput>({
+    defaultValues: noteToEdit ? noteToEdit : {},
+  });
 
   async function onSubmit(input: NoteInput) {
     try {
-      const noteRes = await NoteApi.createNote(input);
+      let noteRes: Note;
+
+      if (noteToEdit) {
+        noteRes = await NoteApi.updateNote(noteToEdit._id, input);
+      } else {
+        noteRes = await NoteApi.createNote(input);
+      }
+
       onNoteSaved(noteRes);
     } catch (error) {
       console.log(error);
@@ -30,10 +44,10 @@ function AddNoteDialogue({ onDismiss, onNoteSaved }: AddNoteDialogueProps) {
   return (
     <Modal show onHide={onDismiss}>
       <Modal.Header closeButton>
-        <Modal.Title>Add Note</Modal.Title>
+        <Modal.Title>{noteToEdit ? "Edit note" : "Add note"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form id="addNoteForm" onSubmit={handleSubmit(onSubmit)}>
+        <Form id="addEditNoteForm" onSubmit={handleSubmit(onSubmit)}>
           <Form.Group className="mb-3">
             <Form.Label>Title</Form.Label>
             <Form.Control
@@ -58,7 +72,7 @@ function AddNoteDialogue({ onDismiss, onNoteSaved }: AddNoteDialogueProps) {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button form="addNoteForm" type="submit" disabled={isSubmitting}>
+        <Button form="addEditNoteForm" type="submit" disabled={isSubmitting}>
           Save
         </Button>
       </Modal.Footer>
@@ -66,4 +80,4 @@ function AddNoteDialogue({ onDismiss, onNoteSaved }: AddNoteDialogueProps) {
   );
 }
 
-export default AddNoteDialogue;
+export default AddEditNoteDialogue;
