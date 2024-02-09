@@ -9,7 +9,6 @@ interface NoteProps {
 }
 
 function Note({ note, className }: NoteProps) {
-  console.log(note);
   const { title, text, createdAt, updatedAt } = note;
   let createdUpdatedText: string;
   if (updatedAt > createdAt!) {
