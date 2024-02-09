@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import { Note as NoteModal } from "./models/note";
+import styles from "./styles/NotesPgae.module.css";
 import Note from "./components/Note";
 
 function App() {
@@ -12,7 +14,6 @@ function App() {
           method: "GET",
         });
         const notes = await res.json();
-        console.log(notes);
         setNotes(notes);
       } catch (error) {
         console.error(error);
@@ -21,11 +22,15 @@ function App() {
     getNotes();
   }, []);
   return (
-    <div>
-      {notes.map((note) => (
-        <Note note={note} key={note._id} />
-      ))}
-    </div>
+    <Container>
+      <Row xs={1} md={2} xl={3} className="g-4">
+        {notes.map((note) => (
+          <Col key={note._id}>
+            <Note className={styles.note} note={note} />
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 }
 
