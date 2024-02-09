@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
+import styles from "./styles/NotesPage.module.css";
 import { Note as NoteModal } from "./models/note";
-import styles from "./styles/NotesPgae.module.css";
 import Note from "./components/Note";
+import * as NotesApi from "./api/note_api";
 
 function App() {
   const [notes, setNotes] = useState<NoteModal[]>([]);
@@ -10,13 +11,11 @@ function App() {
   useEffect(function () {
     async function getNotes() {
       try {
-        const res = await fetch("/api/notes", {
-          method: "GET",
-        });
-        const notes = await res.json();
+        const notes = await NotesApi.fetchNotes();
         setNotes(notes);
       } catch (error) {
         console.error(error);
+        alert(error);
       }
     }
     getNotes();
