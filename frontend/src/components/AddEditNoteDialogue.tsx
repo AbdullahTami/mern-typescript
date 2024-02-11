@@ -3,6 +3,7 @@ import { Note } from "../models/note";
 import { useForm } from "react-hook-form";
 import { NoteInput } from "../api/note_api";
 import * as NoteApi from "../api/note_api";
+import TexInputField from "./form/TexInputField";
 
 interface AddEditNoteDialogueProps {
   noteToEdit?: Note;
@@ -47,7 +48,16 @@ function AddEditNoteDialogue({
       </Modal.Header>
       <Modal.Body>
         <Form id="addEditNoteForm" onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className="mb-3">
+          <TexInputField
+            name="title"
+            label="Title"
+            type="text"
+            placeholder="title"
+            register={register}
+            registerOptions={{ required: "A note must have a title" }}
+            error={errors.title}
+          />
+          {/* <Form.Group className="mb-3">
             <Form.Label>Title</Form.Label>
             <Form.Control
               type="text"
@@ -58,16 +68,15 @@ function AddEditNoteDialogue({
             <Form.Control.Feedback type="invalid">
               {errors.title?.message}
             </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Text</Form.Label>
-            <Form.Control
-              rows={5}
-              as="textarea"
-              placeholder="text"
-              {...register("text")}
-            />
-          </Form.Group>
+          </Form.Group> */}
+          <TexInputField
+            label="Text"
+            name="text"
+            rows={5}
+            as="textarea"
+            placeholder="text"
+            register={register}
+          />
         </Form>
       </Modal.Body>
       <Modal.Footer>
