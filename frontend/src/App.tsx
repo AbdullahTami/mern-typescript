@@ -9,6 +9,7 @@ import * as NotesApi from "./api/note_api";
 import AddNoteDialogue from "./components/AddEditNoteDialogue";
 import SignUpModal from "./components/SignUpModal";
 import LoginModal from "./components/LoginModal";
+import NavBar from "./components/NavBar";
 
 function App() {
   const [notes, setNotes] = useState<NoteModal[]>([]);
@@ -48,71 +49,80 @@ function App() {
     getNotes();
   }, []);
   return (
-    <Container className={styles.notesPage}>
-      <Button
-        className={`${styleUtils.blockCenter} mb-4 
+    <>
+      <NavBar
+        loggedInUser={null}
+        onLoginClicked={() => {}}
+        onLogoutClicked={() => {}}
+        onSignUpClicked={() => {}}
+      />
+
+      <Container className={styles.notesPage}>
+        <Button
+          className={`${styleUtils.blockCenter} mb-4 
         ${styleUtils.flexCenter}`}
-        onClick={() => setShowAddNoteDialogue(true)}
-      >
-        <FaPlus />
-        Add new note
-      </Button>
-      {notesLoading && <Spinner animation="border" variant="primary" />}
-      {showNotesLoadingError && (
-        <p>Something went wrong! Please refresh the page.</p>
-      )}
-      {!notesLoading && !showNotesLoadingError && (
-        <>
-          {!notes.length ? (
-            <p>You don't have any note</p>
-          ) : (
-            <Row xs={1} md={2} xl={3} className={`g-4 ${styles.noteGrid}`}>
-              {notes.map((note) => (
-                <Col key={note._id}>
-                  <Note
-                    onNoteClicked={setNoteToEdit}
-                    onDeleteNoteClicked={deleteNote}
-                    className={styles.note}
-                    note={note}
-                  />
-                </Col>
-              ))}
-            </Row>
-          )}
-        </>
-      )}
-      {showAddNoteDialogue && (
-        <AddNoteDialogue
-          onNoteSaved={(newNote) => {
-            setNotes([...notes, newNote]);
-            setShowAddNoteDialogue(false);
-          }}
-          onDismiss={() => setShowAddNoteDialogue(false)}
-        />
-      )}
-      {noteToEdit && (
-        <AddNoteDialogue
-          noteToEdit={noteToEdit}
-          onDismiss={() => setNoteToEdit(null)}
-          onNoteSaved={(updatedNote) => {
-            setNotes(
-              notes.map((existingNote) =>
-                existingNote._id === updatedNote._id
-                  ? updatedNote
-                  : existingNote
-              )
-            );
-            setNoteToEdit(null);
-          }}
-        />
-      )}
-      {false && (
-        <SignUpModal onDismiss={() => {}} onSignUpSuccessful={() => {}} />
-      )}
-      {false && (
-        <LoginModal onDismiss={() => {}} onLoginSuccessful={() => {}} />
-      )}
-    </Container>
+          onClick={() => setShowAddNoteDialogue(true)}
+        >
+          <FaPlus />
+          Add new note
+        </Button>
+        {notesLoading && <Spinner animation="border" variant="primary" />}
+        {showNotesLoadingError && (
+          <p>Something went wrong! Please refresh the page.</p>
+        )}
+        {!notesLoading && !showNotesLoadingError && (
+          <>
+            {!notes.length ? (
+              <p>You don't have any note</p>
+            ) : (
+              <Row xs={1} md={2} xl={3} className={`g-4 ${styles.noteGrid}`}>
+                {notes.map((note) => (
+                  <Col key={note._id}>
+                    <Note
+                      onNoteClicked={setNoteToEdit}
+                      onDeleteNoteClicked={deleteNote}
+                      className={styles.note}
+                      note={note}
+                    />
+                  </Col>
+                ))}
+              </Row>
+            )}
+          </>
+        )}
+        {showAddNoteDialogue && (
+          <AddNoteDialogue
+            onNoteSaved={(newNote) => {
+              setNotes([...notes, newNote]);
+              setShowAddNoteDialogue(false);
+            }}
+            onDismiss={() => setShowAddNoteDialogue(false)}
+          />
+        )}
+        {noteToEdit && (
+          <AddNoteDialogue
+            noteToEdit={noteToEdit}
+            onDismiss={() => setNoteToEdit(null)}
+            onNoteSaved={(updatedNote) => {
+              setNotes(
+                notes.map((existingNote) =>
+                  existingNote._id === updatedNote._id
+                    ? updatedNote
+                    : existingNote
+                )
+              );
+              setNoteToEdit(null);
+            }}
+          />
+        )}
+        {false && (
+          <SignUpModal onDismiss={() => {}} onSignUpSuccessful={() => {}} />
+        )}
+        {false && (
+          <LoginModal onDismiss={() => {}} onLoginSuccessful={() => {}} />
+        )}
+      </Container>
+    </>
   );
 }
 
