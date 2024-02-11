@@ -9,6 +9,7 @@ interface NoteBody {
 }
 
 export const getAllNotes: RequestHandler = async (req, res, next) => {
+  console.log(req);
   try {
     const notes = await Note.find();
     res.status(200).json(notes);
