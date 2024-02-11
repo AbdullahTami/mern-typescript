@@ -10,3 +10,7 @@
   justify-content: center;
   gap: 4px;
 }
+
+.fullWidth {
+  width: 100%;
+}

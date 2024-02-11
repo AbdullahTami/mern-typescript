@@ -7,6 +7,8 @@ import { Note as NoteModal } from "./models/note";
 import Note from "./components/Note";
 import * as NotesApi from "./api/note_api";
 import AddNoteDialogue from "./components/AddEditNoteDialogue";
+import SignUpModal from "./components/SignUpModal";
+import LoginModal from "./components/LoginModal";
 
 function App() {
   const [notes, setNotes] = useState<NoteModal[]>([]);
@@ -103,6 +105,12 @@ function App() {
             setNoteToEdit(null);
           }}
         />
+      )}
+      {false && (
+        <SignUpModal onDismiss={() => {}} onSignUpSuccessful={() => {}} />
+      )}
+      {false && (
+        <LoginModal onDismiss={() => {}} onLoginSuccessful={() => {}} />
       )}
     </Container>
   );
