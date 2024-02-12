@@ -1,14 +1,15 @@
+import { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
+import * as NotesApi from "./api/note_api";
 import LoginModal from "./components/LoginModal";
 import NavBar from "./components/NavBar";
 import SignUpModal from "./components/SignUpModal";
-import styles from "./styles/NotesPage.module.css";
-import { useEffect, useState } from "react";
-import * as NotesApi from "./api/note_api";
-
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { User } from "./models/user";
-import NotesPageLoggedInView from "./components/NotesPageLoggedInView";
-import NotesPageLoggedOutView from "./components/NotesPageLoggedOutView";
+import NotFoundPage from "./pages/NotFoundPage";
+import NotesPage from "./pages/NotesPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import styles from "./styles/App.module.css";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -27,23 +28,21 @@ function App() {
     fetchLoggedInUser();
   }, []);
   return (
-    <>
+    <BrowserRouter>
       <NavBar
         loggedInUser={null}
         onLoginClicked={() => setShowLoginModal(true)}
         onLogoutClicked={() => setLoggedInUser(null)}
         onSignUpClicked={() => setShowSignUpModal(true)}
       />
-
-      <Container className={styles.notesPage}>
-        <>
-          {loggedInUser ? (
-            <NotesPageLoggedInView />
-          ) : (
-            <NotesPageLoggedOutView />
-          )}
-        </>
+      <Container className={styles.pageContainer}>
+        <Routes>
+          <Route path="/" element={<NotesPage loggedInUser={loggedInUser} />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/*" element={<NotFoundPage />} />
+        </Routes>
       </Container>
+
       {showSignUpModal && (
         <SignUpModal
           onDismiss={() => setShowSignUpModal(false)}
@@ -62,7 +61,7 @@ function App() {
           }}
         />
       )}
-    </>
+    </BrowserRouter>
   );
 }
 
