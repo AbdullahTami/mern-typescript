@@ -2,9 +2,11 @@ import { useForm } from "react-hook-form";
 import { User } from "../models/user";
 import { SignUpCredentials } from "../api/note_api";
 import * as NoteApi from "../api/note_api";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Alert, Button, Form, Modal } from "react-bootstrap";
 import TexInputField from "./form/TexInputField";
 import styleUtils from "../styles/utils.module.css";
+import { useState } from "react";
+import { ConflictError } from "../errors/http_errors";
 
 interface SignUpModalProps {
   onDismiss: () => void;
@@ -15,6 +17,7 @@ export default function SignUpModal({
   onDismiss,
   onSignUpSuccessful,
 }: SignUpModalProps) {
+  const [errorText, setErrorText] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -26,6 +29,7 @@ export default function SignUpModal({
       const newUser = await NoteApi.signUp(credentials);
       onSignUpSuccessful(newUser);
     } catch (error) {
+      if (error instanceof ConflictError) setErrorText(error.message);
       alert(error);
       console.error(error);
     }
@@ -37,6 +41,7 @@ export default function SignUpModal({
         <Modal.Title>Sign Up</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {errorText && <Alert variant="danger">{errorText}</Alert>}
         <Form onSubmit={handleSubmit(onSubmit)}>
           <TexInputField
             name="username"

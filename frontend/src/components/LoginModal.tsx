@@ -2,10 +2,12 @@ import { useForm } from "react-hook-form";
 import { User } from "../models/user";
 import { LoginCredentials } from "../api/note_api";
 import * as NoteApi from "../api/note_api";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Alert, Button, Form, Modal } from "react-bootstrap";
 import styleUtils from "../styles/utils.module.css";
 
 import TexInputField from "./form/TexInputField";
+import { useState } from "react";
+import { UnauthorizedError } from "../errors/http_errors";
 
 interface LoginModalProps {
   onDismiss: () => void;
@@ -16,6 +18,7 @@ export default function LoginModal({
   onDismiss,
   onLoginSuccessful,
 }: LoginModalProps) {
+  const [errorText, setErrorText] = useState<string | null>();
   const {
     register,
     handleSubmit,
@@ -27,8 +30,12 @@ export default function LoginModal({
       const user = await NoteApi.login(credentials);
       onLoginSuccessful(user);
     } catch (error) {
-      alert(error);
-      console.error(error);
+      if (error instanceof UnauthorizedError) {
+        setErrorText(error.message);
+      } else {
+        alert(error);
+        console.error(error);
+      }
     }
   }
   return (
@@ -38,6 +45,7 @@ export default function LoginModal({
       </Modal.Header>
 
       <Modal.Body>
+        {errorText && <Alert variant="danger">{errorText}</Alert>}
         <Form onSubmit={handleSubmit(onSubmit)}>
           <TexInputField
             register={register}
