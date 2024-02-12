@@ -7,6 +7,7 @@ import createHttpError from "http-errors";
 import env from "./utils/validateEnv";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import { requiresAuth } from "./middleware/auth";
 
 const app = express();
 
@@ -29,7 +30,7 @@ app.use(
 );
 
 // Routes
-app.use("/api/notes", noteRouter);
+app.use("/api/notes", requiresAuth, noteRouter);
 app.use("/api/users", userRouter);
 
 // Unknown endpoint

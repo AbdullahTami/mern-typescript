@@ -4,14 +4,8 @@ import createHttpError from "http-errors";
 import User from "../models/userModel";
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
-  console.log(req.session);
-  const authenticatedUserId = req.session.userId;
-  console.log(authenticatedUserId);
-
   try {
-    if (!authenticatedUserId)
-      throw createHttpError(401, "User not authenticated");
-    const user = await User.findById(authenticatedUserId).select("+email");
+    const user = await User.findById(req.session).select("+email");
     res.status(200).json(user);
   } catch (error) {
     next(error);
